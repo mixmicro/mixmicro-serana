@@ -1,2 +1,2 @@
 # Skinny
-Java parallel gzip compression/decompression.
+Java parallel 7z,zip compression/decompression.
