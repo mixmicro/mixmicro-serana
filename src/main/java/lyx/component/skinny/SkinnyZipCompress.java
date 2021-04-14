@@ -130,7 +130,7 @@ public class SkinnyZipCompress extends SkinnyParallelCompress {
         File entryFile = new File(targetDir, archiveEntryFileName);
         byte[] buffer = new byte[super.getContext().getOutputSize()];
         outputStream = new FileOutputStream(entryFile);
-        int length = -1;
+        int length;
         while ((length = zipArchiveInputStream.read(buffer)) != -1) {
           outputStream.write(buffer, 0, length);
         }
