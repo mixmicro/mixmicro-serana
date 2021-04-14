@@ -18,23 +18,36 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny.exception;
+package lyx.component.skinny;
+
+import java.io.File;
 
 /**
- * {@link ArchiveException} Archiver base exception.
+ * {@link AbstractSkinnyImageCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/13
+ * @version ${project.version} - 2021/4/14
  */
-public class ArchiveException extends Exception{
-  private static final long serialVersionUID = -8114178275985303428L;
+public abstract class AbstractSkinnyImageCompress extends GenericSkinnyCompress {
 
-  public ArchiveException(final String message){
-    super(message);
+  @Override
+  public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
+    return false;
   }
 
-  public ArchiveException(final String message, final Exception cause) {
-    super(message);
-    this.initCause(cause);
+  @Override
+  public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
+    return false;
   }
+
+  @Override
+  public boolean decompress(File file, String targetDir) {
+    return false;
+  }
+
+  @Override
+  public boolean decompress(File file, File targetDir) {
+    return false;
+  }
+
 }

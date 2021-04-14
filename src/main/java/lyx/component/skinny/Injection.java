@@ -18,22 +18,22 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny.exception;
+package lyx.component.skinny;
 
-import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * {@link PasswordRequiredException} Exception thrown When trying to read an encrypted entry or file without
- * configuring a password
+ * {@link Injection}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/13
+ * @version ${project.version} - 2021/4/14
  */
-public class PasswordRequiredException extends IOException {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface Injection {
 
-  private static final long serialVersionUID = -591820260812753683L;
-
-  public PasswordRequiredException(final String name) {
-    super("Cannot read encrypted content from " + name + " without a password.");
-  }
+  String name();
 }

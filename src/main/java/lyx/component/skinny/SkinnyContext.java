@@ -18,14 +18,35 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny.archivers;
+package lyx.component.skinny;
 
 /**
- * {@link ArchiveStreamFactory}
+ * {@link SkinnyContext}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/13
+ * @version ${project.version} - 2021/4/14
  */
-public class ArchiveStreamFactory {
+public class SkinnyContext {
 
+  private long blockSize;
+  private int blocks;
+  private int outputSize;
+
+  protected SkinnyContext(long blockSize, int blocks, int outputSize) {
+    this.blockSize = blockSize;
+    this.blocks = blocks;
+    this.outputSize = outputSize;
+  }
+
+  public long getBlockSize() {
+    return blockSize;
+  }
+
+  public int getBlocks() {
+    return blocks;
+  }
+
+  public int getOutputSize() {
+    return outputSize;
+  }
 }

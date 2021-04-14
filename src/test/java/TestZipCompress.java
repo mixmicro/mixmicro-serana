@@ -18,14 +18,42 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny.archivers;
+
+import java.io.File;
+import lyx.component.skinny.Compress;
+import lyx.component.skinny.Skinny;
+import lyx.component.skinny.Skinny.CompressType;
 
 /**
- * {@link ArhiveStreamProvider}
+ * {@link TestZipCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/13
+ * @version ${project.version} - 2021/4/14
  */
-public class ArhiveStreamProvider {
+public class TestZipCompress {
 
+  Compress compress;
+
+  {
+    compress = Skinny.builder()
+        .outputSiz(1024 * 4)
+        .compressionTyp(CompressType.ZIP)
+        .build().getCompress();
+  }
+
+  private void testCompress() {
+    File[] files = new File[]{new File("/Users/eliasyao/Desktop/skinny/testdata/test.json")};
+    compress.compress(files, new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"), false);
+  }
+
+  private void testDeCompress() {
+    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"),
+        "/Users/eliasyao/Desktop/skinny/testdata/temp");
+  }
+
+  public static void main(String[] args) {
+    TestZipCompress t = new TestZipCompress();
+    t.testCompress();
+    t.testDeCompress();
+  }
 }

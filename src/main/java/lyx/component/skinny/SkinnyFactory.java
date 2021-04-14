@@ -31,7 +31,7 @@ import java.util.ServiceLoader;
  * @version ${project.version} - 2021/4/13
  */
 public enum SkinnyFactory {
-  ;
+  INSTANCE;
   Map<String, Compress> compressMap = new HashMap<>(4);
 
   SkinnyFactory() {
@@ -46,11 +46,14 @@ public enum SkinnyFactory {
               + ") and class(" + compressMap.get(name).getClass()
               + ").");
         }
+        compressMap.put(name, compress);
       }
     }
   }
 
-  public Compress getCompressor(String name) {
-    return compressMap.get(name);
+  public Compress getCompressor(String name, SkinnyContext context) {
+    Compress compress = compressMap.get(name);
+    compress.injectContext(context);
+    return compress;
   }
 }

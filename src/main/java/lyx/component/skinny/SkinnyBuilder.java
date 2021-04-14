@@ -31,12 +31,13 @@ import lyx.component.skinny.Skinny.CompressType;
 public class SkinnyBuilder {
 
   // true if need to parallel.
-  public boolean isParallel;
+  private boolean isParallel;
   // size of single block.
-  public long blockSize;
+  private long blockSize;
   // the block number.
-  public int blocks;
+  private int blocks;
   private CompressType typ;
+  private int outputSize;
 
   public SkinnyBuilder() {
 
@@ -62,8 +63,15 @@ public class SkinnyBuilder {
     return this;
   }
 
-  public Skinny build() {
-    return new Skinny(isParallel, blockSize, blocks, typ);
+  public SkinnyBuilder outputSiz(int outputSize) {
+    this.outputSize = outputSize;
+    return this;
   }
 
+  public Skinny build() {
+    return new Skinny(
+        isParallel, blockSize, blocks, typ, outputSize,
+        new SkinnyContext(blockSize, blocks, outputSize)
+    );
+  }
 }

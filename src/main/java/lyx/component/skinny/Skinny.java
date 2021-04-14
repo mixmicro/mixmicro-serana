@@ -20,8 +20,6 @@
  */
 package lyx.component.skinny;
 
-import sun.jvm.hotspot.runtime.ConstructionException;
-
 /**
  * {@link Skinny}As everyone knows that pure java have a standard gzip library,
  * * you can use if you want easy to use and fewer errors,but if you want (de)compress
@@ -35,33 +33,61 @@ import sun.jvm.hotspot.runtime.ConstructionException;
  */
 public class Skinny {
 
-  // true if need to parallel.
-  public boolean isParallel;
-  // size of single block.
-  public long blockSize;
-  // the block number.
-  public int blocks;
+  public static final int DEFAULT_OUTPUT_SIZ = 1024 * 4; // 4kb.
+
+  /**
+   * true if need to parallel.
+   */
+  private boolean isParallel;
+  /**
+   * size of single block.
+   */
+  private long blockSize;
+  /**
+   * the block number.
+   */
+  private int blocks;
   private CompressType typ;
 
+  /**
+   * output siz. Default is 4kb, if you want bigger siz that you can set it through {@link SkinnyBuilder#outputSiz(int)}
+   */
+  private int outputSize;
+  private SkinnyContext context;
+
   private Skinny() {
-    throw new ConstructionException("[Illegal Construction] if you want instanced skinny that you can use builder constructor.");
+    throw new UnsupportedOperationException(
+        "[Illegal Construction] if you want instanced skinny that you can use builder constructor.");
   }
 
-  protected Skinny(boolean isParallel, long blockSize, int blocks, CompressType typ) {
+  protected Skinny(
+      boolean isParallel,
+      long blockSize,
+      int blocks,
+      CompressType typ,
+      int outputSize,
+      SkinnyContext context
+  ) {
     this.isParallel = isParallel;
     this.blockSize = blockSize;
     this.blocks = blocks;
     this.typ = typ;
+    this.outputSize = outputSize;
+    this.context = context;
   }
 
   public static SkinnyBuilder builder() {
     return new SkinnyBuilder();
   }
 
+  public Compress getCompress() {
+    return SkinnyFactory.INSTANCE.getCompressor(typ.desc, context);
+  }
+
   public enum CompressType {
-    GZIP(0, "GZIP"),
-    ZIP(1, "ZIP"),
-    RAR(2, "RAR");
+    SEVENZ(0, "7z"),
+    ZIP(1, "Zip"),
+    IMAGE(2, "Image");
 
     private int code;
     private String desc;

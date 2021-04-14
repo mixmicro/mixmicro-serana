@@ -18,50 +18,42 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny.archivers;
 
-import java.util.Date;
+import java.io.File;
+import lyx.component.skinny.Compress;
+import lyx.component.skinny.Skinny;
+import lyx.component.skinny.Skinny.CompressType;
 
 /**
- * {@link ArchiveEntity} Represent an entry of an archive.
+ * {@link TestSevenZCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/13
+ * @version ${project.version} - 2021/4/14
  */
-public interface ArchiveEntity {
+public class TestSevenZCompress {
 
-  /**
-   * Returns the name of the entry in this archive. May refer to a file or directory or other item.
-   *
-   * <p> This method returns the raw name as it is stored inside of the archive.</p>
-   *
-   * @return the name of the entry in this archive.
-   */
-  String getName();
+  Compress compress;
 
-  /**
-   * Return the uncompressed size of the entry. Maybe -1(SIZE_UNKNOWN) if the size is unknown.
-   *
-   * @return the uncompressed size of the entry.
-   */
-  long getSize();
+  {
+    compress = Skinny.builder()
+        .outputSiz(1024 * 4)
+        .compressionTyp(CompressType.SEVENZ)
+        .build().getCompress();
+  }
 
-  /**
-   * Special value indicating that the size is unknown.
-   */
-  long SIZE_UNKNOWN = -1;
+  void testSeven7Compress() {
+    File[] files = new File[]{new File("/Users/eliasyao/Desktop/skinny/testdata/test.json")};
+    compress.compress(files, new File("/Users/eliasyao/Desktop/skinny/testdata/test.7z"), false);
+  }
 
-  /**
-   * Return true if the entry refers to a directory.
-   *
-   * @return true if the entry refers to a directory.
-   */
-  boolean isDirectory();
+  void testSeven7DeCompress() {
+    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.7z"),
+        "/Users/eliasyao/Desktop/skinny/testdata/temp");
+  }
 
-  /**
-   * Returns the last modified date of this entry.
-   *
-   * @return the last modified date of this entry.
-   */
-  Date getLastModifiedDate();
+  public static void main(String[] args) {
+    TestSevenZCompress t = new TestSevenZCompress();
+    t.testSeven7Compress();
+    t.testSeven7DeCompress();
+  }
 }
