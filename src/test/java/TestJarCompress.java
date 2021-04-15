@@ -26,39 +26,39 @@ import lyx.component.skinny.Skinny;
 import lyx.component.skinny.Skinny.CompressType;
 
 /**
- * {@link TestZipCompress}
+ * {@link TestJarCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/14
  */
-public class TestZipCompress {
+public class TestJarCompress {
 
   Compress compress;
 
   {
     compress = Skinny.builder()
         .outputSiz(1024 * 4)
-        .compressionTyp(CompressType.ZIP)
+        .compressionTyp(CompressType.JAR)
         .build().getCompress();
   }
 
   private void testCompress() {
     File[] files = new File[]{new File("/Users/eliasyao/Desktop/skinny/testdata/test.json")};
-    compress.compress(files, new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"), false);
+    compress.compress(files, new File("/Users/eliasyao/Desktop/skinny/testdata/test.jar"), false);
   }
 
   private void testList(){
-    List<String> strings = compress.listFiles(new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"));
+    List<String> strings = compress.listFiles(new File("/Users/eliasyao/Desktop/skinny/testdata/test.jar"));
     System.out.println(strings);
   }
 
   private void testDeCompress() {
-    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"),
+    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.jar"),
         "/Users/eliasyao/Desktop/skinny/testdata/temp");
   }
 
   public static void main(String[] args) {
-    TestZipCompress t = new TestZipCompress();
+    TestJarCompress t = new TestJarCompress();
     t.testCompress();
     t.testList();
     t.testDeCompress();

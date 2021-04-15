@@ -158,7 +158,7 @@ public class SkinnyZipCompress extends SkinnyParallelCompress {
         e.printStackTrace();
       }
     }
-    return false;
+    return true;
   }
 
   @Override

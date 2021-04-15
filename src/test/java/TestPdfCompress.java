@@ -19,48 +19,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
+
+import com.itextpdf.text.DocumentException;
+
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
 import lyx.component.skinny.Compress;
 import lyx.component.skinny.Skinny;
 import lyx.component.skinny.Skinny.CompressType;
 
 /**
- * {@link TestZipCompress}
+ * {@link TestPdfCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/14
+ * @version ${project.version} - 2021/4/15
  */
-public class TestZipCompress {
-
+public class TestPdfCompress {
   Compress compress;
 
   {
     compress = Skinny.builder()
         .outputSiz(1024 * 4)
-        .compressionTyp(CompressType.ZIP)
+        .compressionTyp(CompressType.PDF)
         .build().getCompress();
   }
 
   private void testCompress() {
-    File[] files = new File[]{new File("/Users/eliasyao/Desktop/skinny/testdata/test.json")};
-    compress.compress(files, new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"), false);
+    File[] files = new File[]{new File("/Users/eliasyao/Desktop/Succinct- Enabling Queries on Compressed Data.pdf")};
+    compress.compress(files, new File("/Users/eliasyao/Desktop/11.pdf"), false);
   }
 
-  private void testList(){
-    List<String> strings = compress.listFiles(new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"));
-    System.out.println(strings);
-  }
 
-  private void testDeCompress() {
-    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"),
-        "/Users/eliasyao/Desktop/skinny/testdata/temp");
-  }
-
-  public static void main(String[] args) {
-    TestZipCompress t = new TestZipCompress();
+  public static void main(String[] args) throws DocumentException, IOException {
+    TestPdfCompress t = new TestPdfCompress();
     t.testCompress();
-    t.testList();
-    t.testDeCompress();
   }
 }

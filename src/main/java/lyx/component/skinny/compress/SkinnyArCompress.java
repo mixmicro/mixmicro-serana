@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
@@ -41,6 +42,7 @@ import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
+@Injection(name = "Ar")
 public class SkinnyArCompress extends SkinnyParallelCompress {
 
   private static final String ZIP_SUFFIX = ".ar";
@@ -150,7 +152,7 @@ public class SkinnyArCompress extends SkinnyParallelCompress {
         e.printStackTrace();
       }
     }
-    return false;
+    return true;
   }
 
   @Override

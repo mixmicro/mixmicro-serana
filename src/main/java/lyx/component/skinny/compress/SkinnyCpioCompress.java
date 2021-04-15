@@ -29,14 +29,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
-import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
+import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveOutputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
 /**
  * {@link SkinnyCpioCompress}
@@ -44,6 +43,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
+@Injection(name = "Cpio")
 public class SkinnyCpioCompress extends SkinnyParallelCompress {
 
   private static final String CPIO_SUFFIX = ".cpio";
@@ -69,8 +69,8 @@ public class SkinnyCpioCompress extends SkinnyParallelCompress {
     try {
       cpioArchiveOutputStream = new CpioArchiveOutputStream(Files.newOutputStream(file.toPath()));
       for (File sourceFile : sourceFiles) {
-        ArArchiveEntry arArchiveEntry = new ArArchiveEntry(sourceFile.getName(), sourceFile.length());
-        cpioArchiveOutputStream.putArchiveEntry(arArchiveEntry);
+        CpioArchiveEntry cpioArchiveEntry = new CpioArchiveEntry(sourceFile.getName(), sourceFile.length());
+        cpioArchiveOutputStream.putArchiveEntry(cpioArchiveEntry);
         inputStream = new FileInputStream(sourceFile);
         byte[] buffer = new byte[super.getContext().getOutputSize()];
         int length;
@@ -153,7 +153,7 @@ public class SkinnyCpioCompress extends SkinnyParallelCompress {
         e.printStackTrace();
       }
     }
-    return false;
+    return true;
   }
 
   @Override

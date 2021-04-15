@@ -34,5 +34,17 @@
       <artifactId>thumbnailator</artifactId>
       <version>[0.4, 0.5)</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.junrar</groupId>
+      <artifactId>junrar</artifactId>
+      <version>7.4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>itextpdf</artifactId>
+      <version>5.5.13.2</version>
+    </dependency>
   </dependencies>
 </project>

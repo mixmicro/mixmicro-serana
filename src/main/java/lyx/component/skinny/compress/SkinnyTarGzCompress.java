@@ -20,8 +20,7 @@
  */
 package lyx.component.skinny.compress;
 
-import java.io.File;
-import lyx.component.skinny.SkinnyParallelCompress;
+import lyx.component.skinny.Injection;
 
 /**
  * {@link SkinnyTarGzCompress}
@@ -29,25 +28,6 @@ import lyx.component.skinny.SkinnyParallelCompress;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
-public class SkinnyTarGzCompress extends SkinnyParallelCompress {
-
-  @Override
-  public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
-    return false;
-  }
-
-  @Override
-  public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
-    return false;
-  }
-
-  @Override
-  public boolean decompress(File file, String targetDir) {
-    return false;
-  }
-
-  @Override
-  public boolean decompress(File file, File targetDir) {
-    return false;
-  }
+@Injection(name = "TarGz")
+public class SkinnyTarGzCompress extends SkinnyGzipCompress {
 }

@@ -21,7 +21,16 @@
 package lyx.component.skinny.compress;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 
 /**
  * {@link SkinnyGzipCompress}
@@ -29,25 +38,109 @@ import lyx.component.skinny.SkinnyParallelCompress;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
+@Injection(name = "Gzip")
 public class SkinnyGzipCompress extends SkinnyParallelCompress {
+
+  private static final String GZ_SUFFIX = ".gz";
 
   @Override
   public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
-    return false;
+    return compress(sourceFiles, new File(filePath, fileName), isDeleteSourceFile);
   }
 
   @Override
   public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
-    return false;
+    InputStream inputStream = null;
+    GzipCompressorOutputStream gzipCompressorOutputStream = null;
+
+    if (!file.getName().endsWith(GZ_SUFFIX)) {
+      throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
+    }
+
+    if (sourceFiles == null || sourceFiles.length <= 0) {
+      return false;
+    }
+
+    try {
+      gzipCompressorOutputStream = new GzipCompressorOutputStream(Files.newOutputStream(file.toPath()));
+      for (File sourceFile : sourceFiles) {
+        inputStream = new FileInputStream(sourceFile);
+        byte[] buffer = new byte[super.getContext().getOutputSize()];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+          gzipCompressorOutputStream.write(buffer, 0, length);
+        }
+      }
+      gzipCompressorOutputStream.flush();
+
+      if (isDeleteSourceFile) {
+        for (File sourceFile : sourceFiles) {
+          sourceFile.deleteOnExit();
+        }
+      }
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (null != inputStream) {
+          inputStream.close();
+        }
+        if (null != gzipCompressorOutputStream) {
+          gzipCompressorOutputStream.close();
+        }
+      } catch (IOException ie) {
+        ie.printStackTrace();
+      }
+    }
+    return true;
   }
 
   @Override
   public boolean decompress(File file, String targetDir) {
-    return false;
+    return decompress(file, new File(targetDir));
   }
 
   @Override
   public boolean decompress(File file, File targetDir) {
-    return false;
+    InputStream inputStream = null;
+    OutputStream outputStream = null;
+    GzipCompressorInputStream gzipCompressorInputStream = null;
+    try {
+      inputStream = new FileInputStream(file);
+      gzipCompressorInputStream = new GzipCompressorInputStream(inputStream);
+
+      if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
+        throw new IOException("failed to create directory " + targetDir);
+      }
+
+      File entryFile = new File(targetDir, file.getName());
+      byte[] buffer = new byte[super.getContext().getOutputSize()];
+      outputStream = new FileOutputStream(entryFile);
+      int length;
+      while ((length = gzipCompressorInputStream.read(buffer)) != -1) {
+        outputStream.write(buffer, 0, length);
+      }
+      outputStream.flush();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (null != outputStream) {
+          outputStream.close();
+        }
+        if (null != gzipCompressorInputStream) {
+          gzipCompressorInputStream.close();
+        }
+        if (null != inputStream) {
+          inputStream.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return true;
   }
 }

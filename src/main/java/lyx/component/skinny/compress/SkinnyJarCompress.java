@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -41,6 +42,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
+@Injection(name = "Jar")
 public class SkinnyJarCompress extends SkinnyParallelCompress {
 
   private static final String JAR_SUFFIX = ".jar";
@@ -150,7 +152,7 @@ public class SkinnyJarCompress extends SkinnyParallelCompress {
         e.printStackTrace();
       }
     }
-    return false;
+    return true;
   }
 
   @Override

@@ -20,8 +20,27 @@
  */
 package lyx.component.skinny.compress;
 
+import com.itextpdf.text.pdf.PRStream;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfNumber;
+import com.itextpdf.text.pdf.PdfObject;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.parser.PdfImageObject;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
+import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
+
 
 /**
  * {@link SkinnyPdfCompress}
@@ -29,25 +48,92 @@ import lyx.component.skinny.SkinnyParallelCompress;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
+@Injection(name = "Pdf")
 public class SkinnyPdfCompress extends SkinnyParallelCompress {
+
+  private static final String PDF_SUFFIX = "pdf";
+  public static final float FACTOR = 0.5f;
 
   @Override
   public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
-    return false;
+    return compress(sourceFiles, new File(fileName, fileName), isDeleteSourceFile);
   }
 
   @Override
   public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
-    return false;
+    try {
+
+      for (File sourceFile : sourceFiles) {
+        if (!sourceFile.getName().endsWith(PDF_SUFFIX)) {
+          throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
+        }
+
+        PdfReader reader = new PdfReader(new FileInputStream(sourceFile));
+        int n = reader.getXrefSize();
+        PdfObject object;
+        PRStream stream;
+        // Look for image and manipulate image stream
+        for (int i = 0; i < n; i++) {
+          object = reader.getPdfObject(i);
+          if (object == null || !object.isStream()) {
+            continue;
+          }
+          stream = (PRStream) object;
+          if (!PdfName.IMAGE.equals(stream.getAsName(PdfName.SUBTYPE))) {
+            continue;
+          }
+          if (!PdfName.DCTDECODE.equals(stream.getAsName(PdfName.FILTER))) {
+            continue;
+          }
+          PdfImageObject image = null;
+
+          image = new PdfImageObject(stream);
+          BufferedImage bi = image.getBufferedImage();
+          if (bi == null) {
+            continue;
+          }
+          int width = (int) (bi.getWidth() * FACTOR);
+          int height = (int) (bi.getHeight() * FACTOR);
+          if (width <= 0 || height <= 0) {
+            continue;
+          }
+          BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+          AffineTransform at = AffineTransform.getScaleInstance(FACTOR, FACTOR);
+          Graphics2D g = img.createGraphics();
+          g.drawRenderedImage(bi, at);
+          ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
+          ImageIO.write(img, "JPG", imgBytes);
+          stream.clear();
+          stream.setData(imgBytes.toByteArray(), false, PRStream.NO_COMPRESSION);
+          stream.put(PdfName.TYPE, PdfName.XOBJECT);
+          stream.put(PdfName.SUBTYPE, PdfName.IMAGE);
+          stream.put(PdfName.FILTER, PdfName.DCTDECODE);
+          stream.put(PdfName.WIDTH, new PdfNumber(width));
+          stream.put(PdfName.HEIGHT, new PdfNumber(height));
+          stream.put(PdfName.BITSPERCOMPONENT, new PdfNumber(8));
+          stream.put(PdfName.COLORSPACE, PdfName.DEVICERGB);
+        }
+        reader.removeUnusedObjects();
+        // Save altered PDF
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(file));
+        stamper.setFullCompression();
+        stamper.close();
+        reader.close();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return true;
   }
 
   @Override
   public boolean decompress(File file, String targetDir) {
-    return false;
+    throw new UnsupportedOperationException("Pdf Decompress haven't been support,but you can compress");
   }
 
   @Override
   public boolean decompress(File file, File targetDir) {
-    return false;
+    throw new UnsupportedOperationException("Pdf Decompress haven't been support,but you can compress");
+
   }
 }

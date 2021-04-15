@@ -87,7 +87,18 @@ public class Skinny {
   public enum CompressType {
     SEVENZ(0, "7z"),
     ZIP(1, "Zip"),
-    IMAGE(2, "Image");
+    IMAGE(2, "Image"),
+    AR(3, "Ar"),
+    BZIP2(4, "Bzip2"),
+    CPIO(5, "Cpio"),
+    GZIP(6, "Gzip"),
+    JAR(7, "Jar"),
+    PDF(8, "Pdf"),
+    RAR(9, "Rar"),
+    TARBZ2(10, "TarBz2"),
+    TAR(11, "Tar"),
+    TARGZ(12, "TarGz"),
+    XZ(13, "Xz");
 
     private int code;
     private String desc;

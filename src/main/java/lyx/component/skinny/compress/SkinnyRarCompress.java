@@ -20,8 +20,13 @@
  */
 package lyx.component.skinny.compress;
 
+import com.github.junrar.ContentDescription;
+import com.github.junrar.Junrar;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
 
 /**
@@ -30,7 +35,10 @@ import lyx.component.skinny.SkinnyParallelCompress;
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
  */
+@Injection(name = "Rar")
 public class SkinnyRarCompress extends SkinnyParallelCompress {
+
+  private static final String RAR_SUFFIX = ".rar";
 
   @Override
   public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
@@ -44,16 +52,35 @@ public class SkinnyRarCompress extends SkinnyParallelCompress {
 
   @Override
   public boolean decompress(File file, String targetDir) {
-    return false;
+    return decompress(file, new File(targetDir));
   }
 
   @Override
   public boolean decompress(File file, File targetDir) {
-    return false;
+    if (!file.getName().endsWith(RAR_SUFFIX)) {
+      throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
+    }
+
+    try {
+      if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
+        throw new IOException("failed to create directory " + targetDir);
+      }
+      Junrar.extract(file, targetDir);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
   }
 
   @Override
   public List<String> listFiles(File file) {
-    return super.listFiles(file);
+    List<ContentDescription> contentDescriptions = null;
+    try {
+      contentDescriptions = Junrar.getContentsDescription(file);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return contentDescriptions.stream().map((desc) -> desc.path).collect(Collectors.toList());
   }
 }
