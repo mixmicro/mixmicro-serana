@@ -18,41 +18,44 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny;
+
+import java.io.File;
+import java.util.List;
+import lyx.component.skinny.Compress;
+import lyx.component.skinny.Skinny;
+import lyx.component.skinny.Skinny.CompressType;
 
 /**
- * {@link SkinnyContext}
+ * {@link TestXzCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/14
+ * @version ${project.version} - 2021/4/15
  */
-public class SkinnyContext {
+public class TestXzCompress {
 
-  private long blockSize;
-  private int blocks;
-  private int outputSize;
-  private String outputName;
+  Compress compress;
 
-  protected SkinnyContext(long blockSize, int blocks, int outputSize, String outputName) {
-    this.blockSize = blockSize;
-    this.blocks = blocks;
-    this.outputSize = outputSize;
-    this.outputName = outputName;
+  {
+    compress = Skinny.builder()
+        .outputSiz(1024 * 4)
+        .compressionTyp(CompressType.XZ)
+        .outputName("te.json")
+        .build().getCompress();
   }
 
-  public long getBlockSize() {
-    return blockSize;
+  private void testCompress() {
+    File[] files = new File[]{new File("/Users/eliasyao/Desktop/skinny/testdata/test.json"),new File("/Users/eliasyao/Desktop/skinny/testdata/te.json")};
+    compress.compress(files, new File("/Users/eliasyao/Desktop/skinny/testdata/test.xz"), false);
   }
 
-  public int getBlocks() {
-    return blocks;
+  private void testDeCompress() {
+    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.xz"),
+        "/Users/eliasyao/Desktop/skinny/testdata/temp");
   }
 
-  public int getOutputSize() {
-    return outputSize;
-  }
-
-  public String getOutputName() {
-    return outputName;
+  public static void main(String[] args) {
+    TestXzCompress t = new TestXzCompress();
+    t.testCompress();
+    t.testDeCompress();
   }
 }

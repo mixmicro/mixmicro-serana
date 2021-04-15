@@ -33,7 +33,7 @@ import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
 
 /**
- * {@link SkinnyXzCompress}
+ * {@link SkinnyXzCompress} Xz compress only support single file compression
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/15
@@ -115,9 +115,8 @@ public class SkinnyXzCompress extends SkinnyParallelCompress {
         throw new IOException("failed to create directory " + targetDir);
       }
 
-      File entryFile = new File(targetDir, file.getName());
       byte[] buffer = new byte[super.getContext().getOutputSize()];
-      outputStream = new FileOutputStream(entryFile);
+      outputStream = new FileOutputStream(new File(targetDir, super.getContext().getOutputName()));
       int length;
       while ((length = xzCompressorInputStream.read(buffer)) != -1) {
         outputStream.write(buffer, 0, length);

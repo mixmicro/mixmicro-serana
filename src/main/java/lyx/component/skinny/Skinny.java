@@ -48,6 +48,7 @@ public class Skinny {
    */
   private int blocks;
   private CompressType typ;
+  private String outputName;
 
   /**
    * output siz. Default is 4kb, if you want bigger siz that you can set it through {@link SkinnyBuilder#outputSiz(int)}
@@ -66,6 +67,7 @@ public class Skinny {
       int blocks,
       CompressType typ,
       int outputSize,
+      String outputName,
       SkinnyContext context
   ) {
     this.isParallel = isParallel;
@@ -73,6 +75,7 @@ public class Skinny {
     this.blocks = blocks;
     this.typ = typ;
     this.outputSize = outputSize;
+    this.outputName = outputName;
     this.context = context;
   }
 

@@ -38,6 +38,7 @@ public class SkinnyBuilder {
   private int blocks;
   private CompressType typ;
   private int outputSize;
+  private String outputName;
 
   public SkinnyBuilder() {
 
@@ -68,10 +69,15 @@ public class SkinnyBuilder {
     return this;
   }
 
+  public SkinnyBuilder outputName(String outputName) {
+    this.outputName = outputName;
+    return this;
+  }
+
   public Skinny build() {
     return new Skinny(
-        isParallel, blockSize, blocks, typ, outputSize,
-        new SkinnyContext(blockSize, blocks, outputSize)
+        isParallel, blockSize, blocks, typ, outputSize, outputName,
+        new SkinnyContext(blockSize, blocks, outputSize, outputName)
     );
   }
 }
