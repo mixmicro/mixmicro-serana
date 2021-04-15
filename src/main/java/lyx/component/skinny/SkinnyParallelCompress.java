@@ -20,6 +20,7 @@
  */
 package lyx.component.skinny;
 
+import java.io.File;
 import java.util.List;
 import net.coobird.thumbnailator.geometry.Positions;
 
@@ -63,7 +64,7 @@ public abstract class SkinnyParallelCompress extends GenericSkinnyCompress {
   }
 
   @Override
-  public List<String> listFiles() {
+  public List<String> listFiles(File file) {
     return null;
   }
 }

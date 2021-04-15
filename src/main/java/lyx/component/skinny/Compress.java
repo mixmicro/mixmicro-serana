@@ -147,9 +147,10 @@ public interface Compress {
   /**
    * Returns list of filename in compressed package.
    *
+   * @param file The compressed file to be extracted.
    * @return list of filename in compressed package.
    */
-  List<String> listFiles();
+  List<String> listFiles(File file);
 
   void injectContext(final SkinnyContext context);
 }

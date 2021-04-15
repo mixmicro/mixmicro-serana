@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -165,5 +167,31 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
       }
     }
     return true;
+  }
+
+  @Override
+  public List<String> listFiles(File file) {
+    List<String> ret = new LinkedList<>();
+    ArchiveEntry archiveEntry;
+    SevenZFile sevenZFile = null;
+    try {
+      sevenZFile = new SevenZFile(file);
+      while (null != (archiveEntry = sevenZFile.getNextEntry())) {
+        String archiveEntryFileName = archiveEntry.getName();
+        ret.add(archiveEntryFileName);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (null != sevenZFile) {
+          sevenZFile.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return ret;
   }
 }

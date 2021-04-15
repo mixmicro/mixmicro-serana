@@ -21,7 +21,19 @@
 package lyx.component.skinny.compress;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.LinkedList;
+import java.util.List;
 import lyx.component.skinny.SkinnyParallelCompress;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
+import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
+import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 
 /**
  * {@link SkinnyArCompress}
@@ -31,23 +43,145 @@ import lyx.component.skinny.SkinnyParallelCompress;
  */
 public class SkinnyArCompress extends SkinnyParallelCompress {
 
+  private static final String ZIP_SUFFIX = ".ar";
+
   @Override
   public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
-    return false;
+    return compress(sourceFiles, new File(filePath, fileName), isDeleteSourceFile);
   }
 
   @Override
   public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
-    return false;
+    InputStream inputStream = null;
+    ArArchiveOutputStream arArchiveOutputStream = null;
+
+    if (!file.getName().endsWith(ZIP_SUFFIX)) {
+      throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
+    }
+
+    if (sourceFiles == null || sourceFiles.length <= 0) {
+      return false;
+    }
+
+    try {
+      arArchiveOutputStream = new ArArchiveOutputStream(Files.newOutputStream(file.toPath()));
+      for (File sourceFile : sourceFiles) {
+        ArArchiveEntry arArchiveEntry = new ArArchiveEntry(sourceFile.getName(), sourceFile.length());
+        arArchiveOutputStream.putArchiveEntry(arArchiveEntry);
+        inputStream = new FileInputStream(sourceFile);
+        byte[] buffer = new byte[super.getContext().getOutputSize()];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+          arArchiveOutputStream.write(buffer, 0, length);
+        }
+      }
+      arArchiveOutputStream.closeArchiveEntry();
+      arArchiveOutputStream.finish();
+
+      if (isDeleteSourceFile) {
+        for (File sourceFile : sourceFiles) {
+          sourceFile.deleteOnExit();
+        }
+      }
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (null != inputStream) {
+          inputStream.close();
+        }
+        if (null != arArchiveOutputStream) {
+          arArchiveOutputStream.close();
+        }
+      } catch (IOException ie) {
+        ie.printStackTrace();
+      }
+    }
+    return true;
   }
 
   @Override
   public boolean decompress(File file, String targetDir) {
-    return false;
+    return decompress(file, new File(targetDir));
   }
 
   @Override
   public boolean decompress(File file, File targetDir) {
+    InputStream inputStream = null;
+    OutputStream outputStream = null;
+    ArArchiveInputStream arArchiveInputStream = null;
+    ArchiveEntry archiveEntry;
+    try {
+      inputStream = new FileInputStream(file);
+      arArchiveInputStream = new ArArchiveInputStream(inputStream);
+      while (null != (archiveEntry = arArchiveInputStream.getNextEntry())) {
+        String archiveEntryFileName = archiveEntry.getName();
+
+        if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
+          throw new IOException("failed to create directory " + targetDir);
+        }
+
+        File entryFile = new File(targetDir, archiveEntryFileName);
+        byte[] buffer = new byte[super.getContext().getOutputSize()];
+        outputStream = new FileOutputStream(entryFile);
+        int length;
+        while ((length = arArchiveInputStream.read(buffer)) != -1) {
+          outputStream.write(buffer, 0, length);
+        }
+        outputStream.flush();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (null != outputStream) {
+          outputStream.close();
+        }
+        if (null != arArchiveInputStream) {
+          arArchiveInputStream.close();
+        }
+        if (null != inputStream) {
+          inputStream.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     return false;
+  }
+
+  @Override
+  public List<String> listFiles(File file) {
+    List<String> ret = new LinkedList<>();
+    InputStream input = null;
+    ArArchiveInputStream arArchiveInputStream = null;
+    ArchiveEntry archiveEntry;
+    try {
+      input = new FileInputStream(file);
+      arArchiveInputStream = new ArArchiveInputStream(input);
+
+      while (null != (archiveEntry = arArchiveInputStream.getNextEntry())) {
+        String archiveEntryFileName = archiveEntry.getName();
+        ret.add(archiveEntryFileName);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+
+        if (null != arArchiveInputStream) {
+          arArchiveInputStream.close();
+        }
+        if (null != input) {
+          input.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return ret;
   }
 }

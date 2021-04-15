@@ -26,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
 import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -157,5 +159,37 @@ public class SkinnyZipCompress extends SkinnyParallelCompress {
       }
     }
     return false;
+  }
+
+  @Override
+  public List<String> listFiles(File file) {
+    List<String> ret = new LinkedList<>();
+    InputStream input = null;
+    ZipArchiveInputStream zipArchiveInputStream = null;
+    ArchiveEntry archiveEntry;
+    try {
+      input = new FileInputStream(file);
+      zipArchiveInputStream = new ZipArchiveInputStream(input, encoding);
+
+      while (null != (archiveEntry = zipArchiveInputStream.getNextEntry())) {
+        String archiveEntryFileName = archiveEntry.getName();
+        ret.add(archiveEntryFileName);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+
+        if (null != zipArchiveInputStream) {
+          zipArchiveInputStream.close();
+        }
+        if (null != input) {
+          input.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return ret;
   }
 }

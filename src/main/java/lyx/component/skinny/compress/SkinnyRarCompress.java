@@ -21,6 +21,7 @@
 package lyx.component.skinny.compress;
 
 import java.io.File;
+import java.util.List;
 import lyx.component.skinny.SkinnyParallelCompress;
 
 /**
@@ -33,12 +34,12 @@ public class SkinnyRarCompress extends SkinnyParallelCompress {
 
   @Override
   public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
-    return false;
+    throw new UnsupportedOperationException("RAR Compress haven't been support,but you can decompress");
   }
 
   @Override
   public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
-    return false;
+    throw new UnsupportedOperationException("RAR Compress haven't been support,but you can decompress");
   }
 
   @Override
@@ -49,5 +50,10 @@ public class SkinnyRarCompress extends SkinnyParallelCompress {
   @Override
   public boolean decompress(File file, File targetDir) {
     return false;
+  }
+
+  @Override
+  public List<String> listFiles(File file) {
+    return super.listFiles(file);
   }
 }

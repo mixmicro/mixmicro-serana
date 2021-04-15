@@ -52,7 +52,7 @@ public abstract class AbstractSkinnyImageCompress extends GenericSkinnyCompress 
   }
 
   @Override
-  public List<String> listFiles() {
+  public List<String> listFiles(File file) {
     return null;
   }
 }
