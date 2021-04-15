@@ -1,3 +1,14 @@
-lyx.component.skinny.SkinnySevenZCompress
-lyx.component.skinny.SkinnyZipCompress
-lyx.component.skinny.SkinnyImageCompress
+lyx.component.skinny.compress.SkinnySevenZCompress
+lyx.component.skinny.compress.SkinnyZipCompress
+lyx.component.skinny.compress.SkinnyImageCompress
+lyx.component.skinny.compress.SkinnyArCompress
+lyx.component.skinny.compress.SkinnyBzip2Compress
+lyx.component.skinny.compress.SkinnyCpioCompress
+lyx.component.skinny.compress.SkinnyGzipCompress
+lyx.component.skinny.compress.SkinnyJarCompress
+lyx.component.skinny.compress.SkinnyPdfCompress
+lyx.component.skinny.compress.SkinnyRarCompress
+lyx.component.skinny.compress.SkinnyTarBz2Compress
+lyx.component.skinny.compress.SkinnyTarCompress
+lyx.component.skinny.compress.SkinnyTarGzCompress
+lyx.component.skinny.compress.SkinnyXzCompress

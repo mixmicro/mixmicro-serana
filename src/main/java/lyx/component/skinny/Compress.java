@@ -21,6 +21,7 @@
 package lyx.component.skinny;
 
 import java.io.File;
+import java.util.List;
 import net.coobird.thumbnailator.geometry.Positions;
 
 /**
@@ -142,6 +143,13 @@ public interface Compress {
    * @return
    */
   boolean decompress(File file, File targetDir);
+
+  /**
+   * Returns list of filename in compressed package.
+   *
+   * @return list of filename in compressed package.
+   */
+  List<String> listFiles();
 
   void injectContext(final SkinnyContext context);
 }

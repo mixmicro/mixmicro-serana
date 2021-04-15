@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny;
+package lyx.component.skinny.compress;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,26 +26,28 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.Date;
+import lyx.component.skinny.Injection;
+import lyx.component.skinny.SkinnyParallelCompress;
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
-import org.apache.commons.compress.archivers.sevenz.SevenZFile;
-import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
+import org.apache.commons.compress.archivers.zip.Zip64Mode;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 /**
- * {@link SkinnySevenZCompress}
+ * {@link SkinnyZipCompress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
  * @version ${project.version} - 2021/4/14
  */
-@Injection(name = "7z")
-public class SkinnySevenZCompress extends SkinnyParallelCompress {
+@Injection(name = "Zip")
+public class SkinnyZipCompress extends SkinnyParallelCompress {
 
-  private static final String SEVENZ_SUFFIX = ".7z";
+  private String encoding = "UTF8";
+  private static final String ZIP_SUFFIX = ".zip";
 
-  public SkinnySevenZCompress() {
 
+  public SkinnyZipCompress() {
   }
 
   @Override
@@ -56,9 +58,9 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
   @Override
   public boolean compress(File[] sourceFiles, File file, boolean isDeleteSourceFile) {
     InputStream inputStream = null;
-    SevenZOutputFile sevenZOutputFile = null;
+    ZipArchiveOutputStream zipArchiveOutputStream = null;
 
-    if (!file.getName().endsWith(SEVENZ_SUFFIX)) {
+    if (!file.getName().endsWith(ZIP_SUFFIX)) {
       throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
     }
 
@@ -66,37 +68,27 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
       return false;
     }
 
-    final Date accessDate = new Date();
-    final Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.HOUR, -1);
-    final Date creationDate = cal.getTime();
-
     try {
-      sevenZOutputFile = new SevenZOutputFile(file);
+      zipArchiveOutputStream = new ZipArchiveOutputStream(file);
+      zipArchiveOutputStream.setUseZip64(Zip64Mode.AsNeeded);
       for (File sourceFile : sourceFiles) {
-        SevenZArchiveEntry entry = new SevenZArchiveEntry();
-        entry.setName(sourceFile.getName());
-        entry.setAccessDate(accessDate);
-        entry.setCreationDate(creationDate);
-        sevenZOutputFile.putArchiveEntry(entry);
-
+        ZipArchiveEntry zipArchiveEntry = new ZipArchiveEntry(sourceFile.getName());
+        zipArchiveOutputStream.putArchiveEntry(zipArchiveEntry);
         inputStream = new FileInputStream(sourceFile);
         byte[] buffer = new byte[super.getContext().getOutputSize()];
         int length;
         while ((length = inputStream.read(buffer)) != -1) {
-          sevenZOutputFile.write(buffer, 0, length);
+          zipArchiveOutputStream.write(buffer, 0, length);
         }
-        sevenZOutputFile.closeArchiveEntry();
       }
-
-      sevenZOutputFile.finish();
+      zipArchiveOutputStream.closeArchiveEntry();
+      zipArchiveOutputStream.finish();
 
       if (isDeleteSourceFile) {
         for (File sourceFile : sourceFiles) {
           sourceFile.deleteOnExit();
         }
       }
-
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -106,14 +98,14 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
         if (null != inputStream) {
           inputStream.close();
         }
-        if (null != sevenZOutputFile) {
-          sevenZOutputFile.close();
+        if (null != zipArchiveOutputStream) {
+          zipArchiveOutputStream.close();
         }
       } catch (IOException ie) {
         ie.printStackTrace();
       }
-      return true;
     }
+    return true;
   }
 
   @Override
@@ -125,25 +117,27 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
   public boolean decompress(File file, File targetDir) {
     InputStream inputStream = null;
     OutputStream outputStream = null;
+    ZipArchiveInputStream zipArchiveInputStream = null;
     ArchiveEntry archiveEntry;
-    SevenZFile sevenZFile = null;
     try {
-      sevenZFile = new SevenZFile(file);
-      while (null != (archiveEntry = sevenZFile.getNextEntry())) {
+      inputStream = new FileInputStream(file);
+      zipArchiveInputStream = new ZipArchiveInputStream(inputStream, encoding);
+      while (null != (archiveEntry = zipArchiveInputStream.getNextEntry())) {
+        String archiveEntryFileName = archiveEntry.getName();
+
         if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
           throw new IOException("failed to create directory " + targetDir);
         }
 
-        String archiveEntryFileName = archiveEntry.getName();
         File entryFile = new File(targetDir, archiveEntryFileName);
         byte[] buffer = new byte[super.getContext().getOutputSize()];
         outputStream = new FileOutputStream(entryFile);
         int length;
-        while ((length = sevenZFile.read(buffer)) != -1) {
+        while ((length = zipArchiveInputStream.read(buffer)) != -1) {
           outputStream.write(buffer, 0, length);
         }
+        outputStream.flush();
       }
-      outputStream.flush();
     } catch (IOException e) {
       e.printStackTrace();
       return false;
@@ -152,8 +146,8 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
         if (null != outputStream) {
           outputStream.close();
         }
-        if (null != sevenZFile) {
-          sevenZFile.close();
+        if (null != zipArchiveInputStream) {
+          zipArchiveInputStream.close();
         }
         if (null != inputStream) {
           inputStream.close();
@@ -162,6 +156,6 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
         e.printStackTrace();
       }
     }
-    return true;
+    return false;
   }
 }

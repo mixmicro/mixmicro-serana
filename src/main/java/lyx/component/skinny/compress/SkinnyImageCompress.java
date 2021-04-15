@@ -18,11 +18,13 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny;
+package lyx.component.skinny.compress;
 
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import lyx.component.skinny.AbstractSkinnyImageCompress;
+import lyx.component.skinny.Injection;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 

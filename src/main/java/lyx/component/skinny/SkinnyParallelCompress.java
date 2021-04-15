@@ -20,6 +20,7 @@
  */
 package lyx.component.skinny;
 
+import java.util.List;
 import net.coobird.thumbnailator.geometry.Positions;
 
 /**
@@ -59,5 +60,10 @@ public abstract class SkinnyParallelCompress extends GenericSkinnyCompress {
   public boolean watermarkImage(String originPath, String outputPath, Positions positions, String watermarkPath,
       float outputQuality) {
     return false;
+  }
+
+  @Override
+  public List<String> listFiles() {
+    return null;
   }
 }

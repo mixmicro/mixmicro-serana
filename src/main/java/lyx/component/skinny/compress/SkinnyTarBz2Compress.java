@@ -18,18 +18,18 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package lyx.component.skinny;
+package lyx.component.skinny.compress;
 
 import java.io.File;
-import java.util.List;
+import lyx.component.skinny.SkinnyParallelCompress;
 
 /**
- * {@link AbstractSkinnyImageCompress}
+ * {@link SkinnyTarBz2Compress}
  *
  * @author <a href="mailto:siran0611@gmail.com">Elias.Yao</a>
- * @version ${project.version} - 2021/4/14
+ * @version ${project.version} - 2021/4/15
  */
-public abstract class AbstractSkinnyImageCompress extends GenericSkinnyCompress {
+public class SkinnyTarBz2Compress extends SkinnyParallelCompress {
 
   @Override
   public boolean compress(File[] sourceFiles, String filePath, String fileName, boolean isDeleteSourceFile) {
@@ -49,10 +49,5 @@ public abstract class AbstractSkinnyImageCompress extends GenericSkinnyCompress 
   @Override
   public boolean decompress(File file, File targetDir) {
     return false;
-  }
-
-  @Override
-  public List<String> listFiles() {
-    return null;
   }
 }
