@@ -75,6 +75,11 @@ public class SkinnyBuilder {
     return this;
   }
 
+  public SkinnyBuilder ignoreFolder(boolean ignoreFolder) {
+    this.ignoreFolder = ignoreFolder;
+    return this;
+  }
+
   public Skinny build() {
     return new Skinny(
         isParallel, blockSize, blocks, typ, outputSize, outputName, ignoreFolder,

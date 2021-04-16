@@ -8,6 +8,7 @@ lyx.component.skinny.compress.SkinnyGzipCompress
 lyx.component.skinny.compress.SkinnyJarCompress
 lyx.component.skinny.compress.SkinnyPdfCompress
 lyx.component.skinny.compress.SkinnyRarCompress
+lyx.component.skinny.compress.SkinnyRar5Compress
 lyx.component.skinny.compress.SkinnyTarBz2Compress
 lyx.component.skinny.compress.SkinnyTarCompress
 lyx.component.skinny.compress.SkinnyTarGzCompress
