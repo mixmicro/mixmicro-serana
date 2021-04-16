@@ -32,7 +32,7 @@ import java.util.ServiceLoader;
  */
 public enum SkinnyFactory {
   INSTANCE;
-  Map<String, Compress> compressMap = new HashMap<>(4);
+  Map<String, Compress> compressMap = new HashMap<>(14);
 
   SkinnyFactory() {
     ServiceLoader<Compress> compresses = ServiceLoader.load(Compress.class);
