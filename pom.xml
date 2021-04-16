@@ -46,5 +46,24 @@
       <artifactId>itextpdf</artifactId>
       <version>5.5.13.2</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.axet</groupId>
+      <artifactId>java-unrar</artifactId>
+      <version>1.7.0-8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.sevenzipjbinding</groupId>
+      <artifactId>sevenzipjbinding</artifactId>
+      <version>16.02-2.01</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.sevenzipjbinding</groupId>
+      <artifactId>sevenzipjbinding-all-platforms</artifactId>
+      <version>16.02-2.01</version>
+    </dependency>
+
   </dependencies>
 </project>

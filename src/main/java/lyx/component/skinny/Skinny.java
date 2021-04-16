@@ -49,6 +49,10 @@ public class Skinny {
   private int blocks;
   private CompressType typ;
   private String outputName;
+  /**
+   * Only used for rar5.
+   */
+  private boolean ignoreFolder;
 
   /**
    * output siz. Default is 4kb, if you want bigger siz that you can set it through {@link SkinnyBuilder#outputSiz(int)}
@@ -68,6 +72,7 @@ public class Skinny {
       CompressType typ,
       int outputSize,
       String outputName,
+      boolean ignoreFolder,
       SkinnyContext context
   ) {
     this.isParallel = isParallel;
@@ -76,6 +81,7 @@ public class Skinny {
     this.typ = typ;
     this.outputSize = outputSize;
     this.outputName = outputName;
+    this.ignoreFolder = ignoreFolder;
     this.context = context;
   }
 
@@ -101,7 +107,8 @@ public class Skinny {
     TARBZ2(10, "TarBz2"),
     TAR(11, "Tar"),
     TARGZ(12, "TarGz"),
-    XZ(13, "Xz");
+    XZ(13, "Xz"),
+    RAR5(14, "Rar5");
 
     private int code;
     private String desc;

@@ -20,6 +20,8 @@
  */
 package lyx.component.skinny;
 
+import static lyx.component.skinny.Skinny.DEFAULT_OUTPUT_SIZ;
+
 /**
  * {@link SkinnyContext}
  *
@@ -30,14 +32,16 @@ public class SkinnyContext {
 
   private long blockSize;
   private int blocks;
-  private int outputSize;
+  private int outputSize = DEFAULT_OUTPUT_SIZ;
   private String outputName;
+  private boolean ignoreFolder = false;
 
-  protected SkinnyContext(long blockSize, int blocks, int outputSize, String outputName) {
+  protected SkinnyContext(long blockSize, int blocks, int outputSize, String outputName, boolean ignoreFolder) {
     this.blockSize = blockSize;
     this.blocks = blocks;
     this.outputSize = outputSize;
     this.outputName = outputName;
+    this.ignoreFolder = ignoreFolder;
   }
 
   public long getBlockSize() {
@@ -54,5 +58,9 @@ public class SkinnyContext {
 
   public String getOutputName() {
     return outputName;
+  }
+
+  public boolean getIgnoreFolder() {
+    return ignoreFolder;
   }
 }
