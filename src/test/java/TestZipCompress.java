@@ -40,7 +40,7 @@ public class TestZipCompress {
         .outputSiz(1024 * 4)
         .compressionTyp(CompressType.ZIP)
         .compressEncode("UTF-8")
-        .decompressEncode("UTF-8")
+        .decompressEncode("GBK")
         .build().getCompress();
   }
 
@@ -55,14 +55,14 @@ public class TestZipCompress {
   }
 
   private void testDeCompress() {
-    compress.decompress(new File("/Users/eliasyao/Desktop/skinny/testdata/test.zip"),
+    compress.decompress(new File("/Users/eliasyao/Desktop/12.zip"),
         "/Users/eliasyao/Desktop/skinny/testdata/temp");
   }
 
   public static void main(String[] args) {
     TestZipCompress t = new TestZipCompress();
-    t.testCompress();
-    t.testList();
+//    t.testCompress();
+//    t.testList();
     t.testDeCompress();
   }
 }

@@ -121,8 +121,14 @@ public class SkinnyJarCompress extends SkinnyParallelCompress {
       while (null != (archiveEntry = jarArchiveInputStream.getNextEntry())) {
         String archiveEntryFileName = archiveEntry.getName();
 
-        if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
+        File f = new File(targetDir + "/" + extractFolder(archiveEntryFileName));
+
+        if (!f.isDirectory() && !f.mkdirs()) {
           throw new IOException("failed to create directory " + targetDir);
+        }
+
+        if (new File(targetDir + "/" + archiveEntryFileName).exists()){
+          continue;
         }
 
         File entryFile = new File(targetDir, archiveEntryFileName);

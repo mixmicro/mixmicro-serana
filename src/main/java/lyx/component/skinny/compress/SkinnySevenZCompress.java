@@ -134,11 +134,18 @@ public class SkinnySevenZCompress extends SkinnyParallelCompress {
     try {
       sevenZFile = new SevenZFile(file);
       while (null != (archiveEntry = sevenZFile.getNextEntry())) {
-        if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
+        String archiveEntryFileName = archiveEntry.getName();
+
+        File f = new File(targetDir + "/" + extractFolder(archiveEntryFileName));
+
+        if (!f.isDirectory() && !f.mkdirs()) {
           throw new IOException("failed to create directory " + targetDir);
         }
 
-        String archiveEntryFileName = archiveEntry.getName();
+        if (new File(targetDir + "/" + archiveEntryFileName).exists()){
+          continue;
+        }
+
         File entryFile = new File(targetDir, archiveEntryFileName);
         byte[] buffer = new byte[super.getContext().getOutputSize()];
         outputStream = new FileOutputStream(entryFile);
