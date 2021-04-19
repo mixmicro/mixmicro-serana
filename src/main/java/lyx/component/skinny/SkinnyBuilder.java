@@ -20,6 +20,9 @@
  */
 package lyx.component.skinny;
 
+import static lyx.component.skinny.Skinny.DEFAULT_ENCODING;
+import static lyx.component.skinny.Skinny.DEFAULT_OUTPUT_SIZ;
+
 import lyx.component.skinny.Skinny.CompressType;
 
 /**
@@ -30,16 +33,30 @@ import lyx.component.skinny.Skinny.CompressType;
  */
 public class SkinnyBuilder {
 
-  // true if need to parallel.
-  private boolean isParallel;
-  // size of single block.
+  /**
+   * true if need to parallel.
+   */
+  private boolean isParallel = false;
+  /**
+   * size of single block.
+   */
   private long blockSize;
-  // the block number.
+  /**
+   * the block number.
+   */
   private int blocks;
   private CompressType typ;
-  private int outputSize;
   private String outputName;
-  private boolean ignoreFolder;
+  /**
+   * Only used for rar5.
+   */
+  private boolean ignoreFolder = true;
+  /**
+   * output siz. Default is 4kb, if you want bigger siz that you can set it through {@link SkinnyBuilder#outputSiz(int)}
+   */
+  private int outputSize = DEFAULT_OUTPUT_SIZ;
+  private String compressEncode = DEFAULT_ENCODING;
+  private String decompressEncode = DEFAULT_ENCODING;
 
   public SkinnyBuilder() {
 
@@ -80,10 +97,27 @@ public class SkinnyBuilder {
     return this;
   }
 
+  public SkinnyBuilder compressEncode(String compressEncode) {
+    this.compressEncode = compressEncode;
+    return this;
+  }
+
+  public SkinnyBuilder decompressEncode(String decompressEncode) {
+    this.decompressEncode = decompressEncode;
+    return this;
+  }
+
+
   public Skinny build() {
     return new Skinny(
-        isParallel, blockSize, blocks, typ, outputSize, outputName, ignoreFolder,
-        new SkinnyContext(blockSize, blocks, outputSize, outputName, ignoreFolder)
-    );
+        typ,
+        new SkinnyContext(
+            blockSize,
+            blocks,
+            outputSize,
+            outputName,
+            ignoreFolder,
+            compressEncode,
+            decompressEncode));
   }
 }

@@ -45,9 +45,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 @Injection(name = "Zip")
 public class SkinnyZipCompress extends SkinnyParallelCompress {
 
-  private String encoding = "UTF8";
   private static final String ZIP_SUFFIX = ".zip";
-
 
   public SkinnyZipCompress() {
   }
@@ -73,6 +71,7 @@ public class SkinnyZipCompress extends SkinnyParallelCompress {
     try {
       zipArchiveOutputStream = new ZipArchiveOutputStream(file);
       zipArchiveOutputStream.setUseZip64(Zip64Mode.AsNeeded);
+      zipArchiveOutputStream.setEncoding(super.getContext().getCompressEncode());
       for (File sourceFile : sourceFiles) {
         ZipArchiveEntry zipArchiveEntry = new ZipArchiveEntry(sourceFile.getName());
         zipArchiveOutputStream.putArchiveEntry(zipArchiveEntry);
@@ -123,7 +122,7 @@ public class SkinnyZipCompress extends SkinnyParallelCompress {
     ArchiveEntry archiveEntry;
     try {
       inputStream = new FileInputStream(file);
-      zipArchiveInputStream = new ZipArchiveInputStream(inputStream, encoding);
+      zipArchiveInputStream = new ZipArchiveInputStream(inputStream, super.getContext().getDecompressEncode());
       while (null != (archiveEntry = zipArchiveInputStream.getNextEntry())) {
         String archiveEntryFileName = archiveEntry.getName();
 
@@ -169,7 +168,7 @@ public class SkinnyZipCompress extends SkinnyParallelCompress {
     ArchiveEntry archiveEntry;
     try {
       input = new FileInputStream(file);
-      zipArchiveInputStream = new ZipArchiveInputStream(input, encoding);
+      zipArchiveInputStream = new ZipArchiveInputStream(input, super.getContext().getDecompressEncode());
 
       while (null != (archiveEntry = zipArchiveInputStream.getNextEntry())) {
         String archiveEntryFileName = archiveEntry.getName();

@@ -33,31 +33,9 @@ package lyx.component.skinny;
  */
 public class Skinny {
 
-  public static final int DEFAULT_OUTPUT_SIZ = 1024 * 4; // 4kb.
-
-  /**
-   * true if need to parallel.
-   */
-  private boolean isParallel;
-  /**
-   * size of single block.
-   */
-  private long blockSize;
-  /**
-   * the block number.
-   */
-  private int blocks;
+  protected static final int DEFAULT_OUTPUT_SIZ = 1024 * 4; // 4kb.
+  protected static final String DEFAULT_ENCODING = "UTF-8";
   private CompressType typ;
-  private String outputName;
-  /**
-   * Only used for rar5.
-   */
-  private boolean ignoreFolder;
-
-  /**
-   * output siz. Default is 4kb, if you want bigger siz that you can set it through {@link SkinnyBuilder#outputSiz(int)}
-   */
-  private int outputSize;
   private SkinnyContext context;
 
   private Skinny() {
@@ -65,23 +43,8 @@ public class Skinny {
         "[Illegal Construction] if you want instanced skinny that you can use builder constructor.");
   }
 
-  protected Skinny(
-      boolean isParallel,
-      long blockSize,
-      int blocks,
-      CompressType typ,
-      int outputSize,
-      String outputName,
-      boolean ignoreFolder,
-      SkinnyContext context
-  ) {
-    this.isParallel = isParallel;
-    this.blockSize = blockSize;
-    this.blocks = blocks;
+  protected Skinny(CompressType typ, SkinnyContext context) {
     this.typ = typ;
-    this.outputSize = outputSize;
-    this.outputName = outputName;
-    this.ignoreFolder = ignoreFolder;
     this.context = context;
   }
 

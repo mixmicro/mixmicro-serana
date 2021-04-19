@@ -32,16 +32,28 @@ public class SkinnyContext {
 
   private long blockSize;
   private int blocks;
-  private int outputSize = DEFAULT_OUTPUT_SIZ;
+  private int outputSize;
   private String outputName;
-  private boolean ignoreFolder = false;
+  private boolean ignoreFolder;
+  private String compressEncode;
+  private String decompressEncode;
 
-  protected SkinnyContext(long blockSize, int blocks, int outputSize, String outputName, boolean ignoreFolder) {
+  protected SkinnyContext(
+      long blockSize,
+      int blocks,
+      int outputSize,
+      String outputName,
+      boolean ignoreFolder,
+      String compressEncode,
+      String decompressEncode
+  ) {
     this.blockSize = blockSize;
     this.blocks = blocks;
     this.outputSize = outputSize;
     this.outputName = outputName;
     this.ignoreFolder = ignoreFolder;
+    this.compressEncode = compressEncode;
+    this.decompressEncode = decompressEncode;
   }
 
   public long getBlockSize() {
@@ -62,5 +74,13 @@ public class SkinnyContext {
 
   public boolean getIgnoreFolder() {
     return ignoreFolder;
+  }
+
+  public String getCompressEncode() {
+    return compressEncode;
+  }
+
+  public String getDecompressEncode() {
+    return decompressEncode;
   }
 }

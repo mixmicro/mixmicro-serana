@@ -39,6 +39,8 @@ public class TestZipCompress {
     compress = Skinny.builder()
         .outputSiz(1024 * 4)
         .compressionTyp(CompressType.ZIP)
+        .compressEncode("UTF-8")
+        .decompressEncode("UTF-8")
         .build().getCompress();
   }
 
