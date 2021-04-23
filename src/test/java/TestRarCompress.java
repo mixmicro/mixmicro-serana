@@ -59,13 +59,13 @@ public class TestRarCompress {
 
 
   private void testList() {
-    List<String> strings = compress.listFiles(new File("/Users/eliasyao/Desktop/asa.rar"));
+    List<String> strings = compress.listFiles(new File("/Users/eliasyao/Desktop/rar5.rar"));
     System.out.println(strings);
   }
 
   private void testDeCompress() {
-    compress.decompress(new File("/Users/eliasyao/Desktop/asa.rar"),
-        "/Users/eliasyao/Desktop/skinny/testdata/temp");
+    compress.decompress(new File("/Users/eliasyao/Desktop/rar5.rar"),
+        "/Users/eliasyao/Desktop/skinny/testdata/temp/");
   }
 
   private void test() throws Exception {
@@ -93,16 +93,17 @@ public class TestRarCompress {
 //    } catch (Exception e) {
 //    }
 
-    SevenZip.initSevenZipFromPlatformJAR();
-    final Map<String, byte[]> extract = ExtractItemsStandardCallback.extract(new File("/Users/eliasyao/Desktop/asa.rar"), true);
-
-    extract.forEach((fileName, bytes) -> {
-      final Path path = Paths.get("/Users/eliasyao/Desktop/skinny/testdata/temp", fileName);
-      try {
-        Files.write(path, bytes);
-      } catch (IOException e) {
-      }
-    });
+//    SevenZip.initSevenZipFromPlatformJAR();
+//    ExtractItemsStandardCallback call = new ExtractItemsStandardCallback();
+//    final Map<String, byte[]> extract = call.extract(new File("/Users/eliasyao/Desktop/asa.rar"), true);
+//
+//    extract.forEach((fileName, bytes) -> {
+//      final Path path = Paths.get("/Users/eliasyao/Desktop/skinny/testdata/temp", fileName);
+//      try {
+//        Files.write(path, bytes);
+//      } catch (IOException e) {
+//      }
+//    });
   }
 
   private String getFileName(FileHeader header) {
@@ -112,6 +113,6 @@ public class TestRarCompress {
   public static void main(String[] args) throws Exception {
     TestRarCompress t = new TestRarCompress();
     t.testList();
-//    t.testDeCompress();
+    t.testDeCompress();
   }
 }

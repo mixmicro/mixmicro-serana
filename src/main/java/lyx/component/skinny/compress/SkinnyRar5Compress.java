@@ -21,6 +21,7 @@
 package lyx.component.skinny.compress;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -76,19 +77,8 @@ public class SkinnyRar5Compress extends SkinnyParallelCompress {
       throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
     }
     try {
-      if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
-        throw new IOException("failed to create directory " + targetDir);
-      }
-
-      final Map<String, byte[]> extract = ExtractItemsStandardCallback.extract(file, super.getContext().getIgnoreFolder());
-
-      extract.forEach((fileName, bytes) -> {
-        final Path path = Paths.get(targetDir.getPath(), fileName);
-        try {
-          Files.write(path, bytes);
-        } catch (IOException e) {
-        }
-      });
+      new ExtractItemsStandardCallback().extract(file, targetDir,
+          super.getContext().getIgnoreFolder());
     } catch (Exception e) {
       e.printStackTrace();
       return false;
@@ -98,13 +88,7 @@ public class SkinnyRar5Compress extends SkinnyParallelCompress {
 
   @Override
   public List<String> listFiles(File file) {
-    List<String> ret = new LinkedList<>();
-    try {
-      final Map<String, byte[]> extract = ExtractItemsStandardCallback.extract(file, super.getContext().getIgnoreFolder());
-      extract.forEach((fileName, bytes) -> ret.add(fileName));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return ret;
+    return new ExtractItemsStandardCallback().list(file);
+
   }
 }
