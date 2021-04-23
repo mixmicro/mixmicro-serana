@@ -45,10 +45,12 @@ import net.sf.sevenzipjbinding.SevenZipNativeInitializationException;
 public class SkinnyRar5Compress extends SkinnyParallelCompress {
 
   private static final String RAR_SUFFIX = ".rar";
+  private ExtractItemsStandardCallback call;
 
   public SkinnyRar5Compress() {
     try {
       SevenZip.initSevenZipFromPlatformJAR();
+      call = new ExtractItemsStandardCallback();
     } catch (SevenZipNativeInitializationException e) {
       e.printStackTrace();
     }
@@ -77,7 +79,7 @@ public class SkinnyRar5Compress extends SkinnyParallelCompress {
       throw new IllegalArgumentException("Suffix name error, your input filename is: " + file.getName());
     }
     try {
-      new ExtractItemsStandardCallback().extract(file, targetDir,
+      call.extract(file, targetDir,
           super.getContext().getIgnoreFolder());
     } catch (Exception e) {
       e.printStackTrace();
@@ -88,7 +90,7 @@ public class SkinnyRar5Compress extends SkinnyParallelCompress {
 
   @Override
   public List<String> listFiles(File file) {
-    return new ExtractItemsStandardCallback().list(file);
+    return call.list(file);
 
   }
 }
