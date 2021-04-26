@@ -21,14 +21,7 @@
 package lyx.component.skinny.compress;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import lyx.component.skinny.ExtractItemsStandardCallback;
 import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;

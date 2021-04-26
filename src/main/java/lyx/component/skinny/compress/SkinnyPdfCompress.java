@@ -21,7 +21,6 @@
 package lyx.component.skinny.compress;
 
 import com.itextpdf.text.pdf.PRStream;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfNumber;
 import com.itextpdf.text.pdf.PdfObject;
@@ -35,8 +34,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.imageio.ImageIO;
 import lyx.component.skinny.Injection;
 import lyx.component.skinny.SkinnyParallelCompress;
